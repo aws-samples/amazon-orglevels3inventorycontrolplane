@@ -1,0 +1,37 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::*"
+            ]
+        },
+        {
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutBucketPublicAccessBlock",
+                "s3:GetInventoryConfiguration",
+                "s3:PutBucketPolicy",
+                "s3:CreateBucket",
+                "s3:ListBucket",
+                "iam:GetUser",
+                "s3:GetBucketLocation",
+                "s3:GetBucketPolicy",
+                "s3:PutInventoryConfiguration"
+            ],
+            "Resource": "arn:aws:s3:::*"
+        }
+    ]
+}

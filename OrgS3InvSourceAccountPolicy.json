@@ -1,0 +1,102 @@
+
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Template to Create an IAM Role on source accounts",
+    "Parameters": {
+        "DestinationAccountId" : {
+            "Type" : "String",
+            "AllowedPattern": "\\d{12}",
+            "Description" : "Enter 12-digit Destination AWS Account ID. Ex: 123456789012"
+            },
+        "DestAcctUser" : {
+            "Type" : "String",
+            "Description" : "Destination account user name to assume the role from the source account. Ensure that user name is accurate otherwise you will not be able to assume the role",
+            "Default": ""
+            }
+    },
+    "Resources": {
+        "SourceAccountRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": 
+                  {"AWS":
+                     {"Fn::Sub": "arn:aws:iam::${DestinationAccountId}:user/${DestAcctUser}"}
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "Path": "/",
+            "RoleName": "OrgS3readonlyrole"
+        }
+    },
+    "SourceAccountPolicy": {
+        "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "Description": "Managed Policy to attach to SourceAccountRole Role",
+                "ManagedPolicyName": "OrgS3readonlyrole_policy",
+                "Path": "/",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                        "Action": [
+                            "s3:ListAllMyBuckets"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": [
+                            "arn:aws:s3:::*"
+                        ]
+                    },
+                    {
+                        "Action": [
+                            "s3:ListBucket",
+                            "s3:GetBucketLocation"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:s3:::*"
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:GetInventoryConfiguration",
+                            "s3:ListBucket",
+                            "iam:GetUser",
+                            "s3:GetBucketLocation",
+                            "s3:PutInventoryConfiguration"
+                        ],
+                        "Resource": "arn:aws:s3:::*"
+                    }
+                ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "SourceAccountRole"
+                    }
+                ]
+              }
+        }
+    },
+    "Outputs": {
+        "RoleName": {
+            "Description": "Name of Created IAM Role",
+            "Value": {
+                "Ref": "SourceAccountRole"
+            }
+        },
+        "RoleArn": {
+            "Description": "Arn of Created Role",
+            "Value": {
+                "Fn::GetAtt": [
+                    "SourceAccountRole",
+                    "Arn"
+                ]
+            }
+        }
+    }
+}
