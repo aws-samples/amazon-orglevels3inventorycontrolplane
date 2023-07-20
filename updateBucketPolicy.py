@@ -75,7 +75,7 @@ def addOrUpdatePolicy(s3,sourceBucket, sourceAccountId, destinationBucket, desti
         #https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-iam-policies.html
         #if it ever change to accept more Bytes, then comment below two lines of the code.
         logger.info(f"Since bucket policy has a limit of 20 KB in size, I'm replacing list of source bucket ARNs with '*'")
-        sourceArnLikeLs = ["*"]
+        sourceArnLikeLs = ["arn:aws:s3:::*"]
         
         if sourceAccountId not in sourceAccountLs:
             sourceAccountLs.append(sourceAccountId)
