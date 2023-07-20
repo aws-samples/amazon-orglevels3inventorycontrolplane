@@ -6,7 +6,6 @@ import createDestinationBucket
 import createInventoryPolicyForBucket
 import updateBucketPolicy
 import assumeRole
-import createGlueCrawler
 import createAthenaWorkgroup
 from botocore.exceptions import ClientError
 
@@ -200,8 +199,6 @@ def createDestBucketAndSetPolicies(destinationAccountId):
                     createInventoryPolicyForBucket.validateInventoryPolicy(s3c,sourceAccountId, sourceBucket, destinationAccountId,dBucket,frequency)
                     updateBucketPolicy.addOrUpdatePolicy(s3c,sourceBucket,sourceAccountId,dBucket,destinationAccountId)
     for key in accountDict.keys():
-        #logger.info (f"creating Crawler if it does not exist region is {key} and starting it")
-        #createGlueCrawler.createCrawler(destinationAccountId,key)
         logger.info((f"creating workgroup if it does not exist region is {key}"))
         createAthenaWorkgroup.createAthenaWGBucket(destinationAccountId,key)
     # clearing dictionary
