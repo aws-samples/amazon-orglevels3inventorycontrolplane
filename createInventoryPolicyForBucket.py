@@ -22,6 +22,8 @@ def createInventory(s3,sourceAccountId, sourceBucket, destinationAccountId,desti
         id = sBucket+"-"+'Inventory'
     else:
         id = sourceBucket+"-"+'Inventory'
+    print(f"sourcebucket is {sourceBucket}")
+    print(f"sourceAccountId is {sourceAccountId}")
     try:
         s3.put_bucket_inventory_configuration(
             Bucket= sourceBucket,
@@ -42,7 +44,7 @@ def createInventory(s3,sourceAccountId, sourceBucket, destinationAccountId,desti
                 'Id': id,
                 'IncludedObjectVersions': 'All',
                 'OptionalFields': [
-                    'Size','LastModifiedDate','StorageClass','ETag','IsMultipartUploaded','ReplicationStatus','EncryptionStatus','ObjectLockRetainUntilDate','ObjectLockMode','ObjectLockLegalHoldStatus','IntelligentTieringAccessTier','BucketKeyStatus','ChecksumAlgorithm'
+                    'Size','LastModifiedDate','StorageClass','ETag','IsMultipartUploaded','ReplicationStatus','EncryptionStatus','ObjectLockRetainUntilDate','ObjectLockMode','ObjectLockLegalHoldStatus','IntelligentTieringAccessTier','BucketKeyStatus','ChecksumAlgorithm','ObjectAccessControlList','ObjectOwner'
                 ],
                 'Schedule': {
                 'Frequency': frequency
@@ -94,7 +96,7 @@ def listInventoryNextToken(s3,token,sourceBucket, sourceAccountId):
     except ClientError as err:
         if "AccessDenied" in err.args[0]:
             #print(f"You are not the owner of the specified bucket {sourceBucket}, or you dont'User does have a permission to list_bucket_inventory_configuration in the source bucket {sourceBucket}")
-            logger.error(f"You are not the owner of the specified bucket {sourceBucket}, or you dont'User does have a permission to list_bucket_inventory_configuration in the source bucket {sourceBucket}")
+            logger.error(f"You are not the owner of the specified bucket {sourceBucket}, or User does have a permission to list_bucket_inventory_configuration in the source bucket {sourceBucket}")
             nextToken = ''
         else:
             #print(f" Error {err}while listing bucket inventoryconfiguration in the source bucket {sourceBucket}")
