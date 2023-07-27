@@ -201,7 +201,9 @@ Resources:
                                   object_lock_legal_hold_status string,
                                   intelligent_tiering_access_tier string,
                                   bucket_key_status string,
-                                  checksum_algorithm string
+                                  checksum_algorithm string,
+                                  ObjectAccessControlList string,
+                                  ObjectOwner string
                           ) PARTITIONED BY (
                                   dt string,
                                   bucketname string
