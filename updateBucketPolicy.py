@@ -9,7 +9,7 @@ logger.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s  %(name)s  %(levelname)s: %(message)s')
 
-file_handler = logging.FileHandler('UpdateDestinationBucketPolicy.log')
+file_handler = logging.FileHandler('UpdateBucketPolicy.log')
 file_handler.setFormatter(formatter)
 
 logger.addHandler(file_handler)
@@ -33,15 +33,12 @@ def addOrUpdatePolicy(s3,sourceBucket, sourceAccountId, destinationBucket, desti
         #I'm expecting the IAM user to have a permission to access bucket policy but in case not, then catching over here it
         elif "AccessDenied" in err.args[0]:
             logger.error(f"IAM user does not have getBucketPolicy permissions, nothing to update on a bucket policy")
-            #print (f"IAM user does not have getBucketPolicy permissions {policy}, nothing to update on a bucket policy")
             policy = None
         elif "Method Not Allowed" in err.args[0]:
             logger.error(f"You're not using an identity that belongs to the bucket owner's account, nothing to update on a bucket policy")
-            #print (f"You're not using an identity that belongs to the bucket owner's account,, nothing to update on a bucket policy")
             policy = None
         else:
             logger.error(f"Unknown Error {err}, nothing to update on a bucket policy")
-            #print (f"Unknown Error {err}, nothing to update on a bucket policy")
             policy = None
     if policy != None:
         logger.info(f"policy exists, updating it with sourceArn and Sourceaccount")
@@ -69,14 +66,17 @@ def addOrUpdatePolicy(s3,sourceBucket, sourceAccountId, destinationBucket, desti
             sourceAccountLs.extend(sourceAccount)
     
         sBucket = "arn:aws:s3:::"+sourceBucket
+        logger.info(f"sBucket is {sBucket}")
         if sBucket not in sourceArnLikeLs:
             sourceArnLikeLs.append("arn:aws:s3:::"+sourceBucket)
         #since bucket policy has a limit of 20 KB in size, I'm replacing list of source bucket ARN with "*"
         #https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-iam-policies.html
         #if it ever change to accept more Bytes, then comment below two lines of the code.
         logger.info(f"Since bucket policy has a limit of 20 KB in size, I'm replacing list of source bucket ARNs with '*'")
-        sourceArnLikeLs = ["arn:aws:s3:::*"]
-        
+        sourceArnLikeLs = "arn:aws:s3:::*"
+        #sourceArnLikeLs = "*"
+        logger.info (f'sourceAccountId is {sourceAccountId}')
+        logger.info(f'sourceAccountLs is {sourceAccountLs}')
         if sourceAccountId not in sourceAccountLs:
             sourceAccountLs.append(sourceAccountId)
 
