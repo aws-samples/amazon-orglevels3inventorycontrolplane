@@ -15,7 +15,7 @@ logger.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s  %(name)s  %(levelname)s: %(message)s')
 
-file_handler = logging.FileHandler('OrgAccountS3Inventory.log')
+file_handler = logging.FileHandler('orgS3Inventory.log')
 file_handler.setFormatter(formatter)
 
 logger.addHandler(file_handler)
@@ -23,8 +23,6 @@ logger.addHandler(file_handler)
 region = ''
 frequency = 'Daily'
 logger.info("S3 Inventory frequency is set to : {}".format(frequency))
-
-
 
 
 # method to determine accountID. I will be using this account Id as the destination account Id.
@@ -56,7 +54,6 @@ def listNextAccounts(nextToken):
                     MaxResults=20, NextToken=nextToken
             )
     except org.exceptions.AccessDeniedException:
-        print(f"IAM user does not have access to list accounts. Exiting ...")
         logger.error(f"IAM user does not have access to list accounts. Exiting ..")
         sys.exit()
     nextToken = accounts.get('NextToken')
@@ -112,7 +109,6 @@ def listBuckets(s3):
         BucketName = s3.list_buckets() 
     except ClientError as e:
         if "AccessDenied" in e.args[0]:
-            print(f"IAM User does not have access to list buckets. Exiting ...")
             logger.error(f"IAM User does not have access to list buckets. Exiting ...")
             sys.exit()
     for bucket in BucketName['Buckets']:
@@ -149,6 +145,7 @@ def tempBucketCredentials(temp_credentials):
 #creating a destination bucket and setting policy if does not exists
 def createDestBucketAndSetPolicies(destinationAccountId):
     destBucket = []
+    accountDict = {}
     sourceAccountIds = listAccounts()
     for sourceAccountId in tqdm(sourceAccountIds):
         print(f"Analyzing account {sourceAccountId}")
@@ -170,20 +167,21 @@ def createDestBucketAndSetPolicies(destinationAccountId):
             s3 = boto3.client('s3')
             accountDict = listBuckets(s3)
         for item in tqdm(accountDict.items()):
-            print(f"Analyzing region {item[0]} ...")
+            print(f"Analyzing region in tqdm {item[0]} ...")
             logger.info(f"Analyzing region {item[0]} ...")
             logger.info(f"sourcebuckets are {item[1]}")
-            # Assuming role another account with the temporary credentials to work with the S3 service.
+            # No need toAssuming role another account with the temporary credentials to work with the S3 service.
             #creating a bucket with a region item[0]
             s3c =boto3.client("s3", region_name = item[0])
             dBucket = createDestinationBucket.createBucket(s3c,item[0], destinationAccountId)
             logger.info(f"The destination Bucket {dBucket} will be created in a region {item[0]} if it does not exist")
             destBucket.append(dBucket)
             sourceBuckets = item[1]
+            logger.info(f"List of source buckets in a region {item[0]} is/are {sourceBuckets}")
             # if  destination bucket exists in the list of the resource bucket, remove it
             if dBucket in sourceBuckets:
                 sourceBuckets.remove(dBucket)
-            logger.info(f"List of source buckets in a region {item[0]} is/are {sourceBuckets}")
+            
             if sourceAccountId != destinationAccountId:
                 #Assuming role from the source account
                 temp_credentials = assumeRole.getCredentialsForRole(sourceAccountId)
@@ -193,16 +191,20 @@ def createDestBucketAndSetPolicies(destinationAccountId):
                     #for updating destination bucket policy use S3 client as code runs with dest account credentials.
                     s3c =boto3.client("s3", region_name = item[0])
                     updateBucketPolicy.addOrUpdatePolicy(s3c,sourceBucket,sourceAccountId,dBucket,destinationAccountId)
+            # Source account and destination account are same, no need to assume role
             else:
                 for sourceBucket in sourceBuckets:
                     s3c =boto3.client("s3", region_name = item[0])
                     createInventoryPolicyForBucket.validateInventoryPolicy(s3c,sourceAccountId, sourceBucket, destinationAccountId,dBucket,frequency)
                     updateBucketPolicy.addOrUpdatePolicy(s3c,sourceBucket,sourceAccountId,dBucket,destinationAccountId)
-    for key in accountDict.keys():
-        logger.info((f"creating workgroup if it does not exist region is {key}"))
-        createAthenaWorkgroup.createAthenaWGBucket(destinationAccountId,key)
-    # clearing dictionary
-    accountDict.clear()
+        for key in accountDict.keys():
+            #logger.info (f"creating Crawler if it does not exist region is {key} and starting it")
+            #createGlueCrawler.createCrawler(destinationAccountId,key)
+            logger.info((f"creating workgroup if it does not exist region is {key}"))
+            createAthenaWorkgroup.createAthenaWGBucket(destinationAccountId,key)
+        # clearing dictionary
+        accountDict.clear()
+
 
 
 def main():
