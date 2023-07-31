@@ -9,7 +9,7 @@ Parameters:
   WorkGroupName:
     Type: String
     Default: primary
-    Description: The name of workgroup that will be used for Athena queries. Enter the unique name of your existing workgroup. Use 1 - 128 characters. (A-Z,a-z,0-9,_,-,.). 
+    Description: The name of workgroup that will be used for Athena queries. Enter the unique name of your existing workgroup. Use 1 - 128 characters. (A-Z,a-z,0-9,_,-,.).
 
 Resources:
   LambdaInvokePermission:
@@ -26,7 +26,18 @@ Resources:
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: lambda-role
+      RoleName: !Join
+        - "-"
+        - - "lambdarole"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
       AssumeRolePolicyDocument:
         Statement:
           - Action:
@@ -47,7 +58,18 @@ Resources:
     Type: AWS::IAM::Policy
     DependsOn: LambdaRole
     Properties: 
-      PolicyName: workgrouppolicy
+      PolicyName: !Join
+        - "-"
+        - - "lambdapolicy"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
       PolicyDocument:
         Version: "2012-10-17"
         Statement: 
