@@ -16,8 +16,8 @@ logger.addHandler(file_handler)
 
 
 def getCredentialsForRole(sourceAccountId):
-    assume_role_arn = "arn:aws:iam::"+sourceAccountId+":role/OrgS3readonlyrole"
-    #assume_role_arn ="arn:aws:iam::086413530787:role/OrgS3readonlyRole"
+    assume_role_arn = "arn:aws:iam::"+sourceAccountId+":role/OrgS3role"
+    #assume_role_arn ="arn:aws:iam::086413530787:role/OrgS3role"
     logger.info(f"assumed role arn is {assume_role_arn}")
     session_name = 'test'
     sts_client = boto3.client(
