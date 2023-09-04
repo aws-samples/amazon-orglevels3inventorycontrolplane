@@ -32,14 +32,14 @@
               ]
             },
             "Path": "/",
-            "RoleName": "OrgS3readonlyrole"
+            "RoleName": "OrgS3role"
         }
     },
     "SourceAccountPolicy": {
         "Type": "AWS::IAM::ManagedPolicy",
             "Properties": {
                 "Description": "Managed Policy to attach to SourceAccountRole Role",
-                "ManagedPolicyName": "OrgS3readonlyrole_policy",
+                "ManagedPolicyName": "OrgS3role_policy",
                 "Path": "/",
                 "PolicyDocument": {
                   "Version": "2012-10-17",
