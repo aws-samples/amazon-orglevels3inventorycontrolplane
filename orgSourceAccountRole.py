@@ -18,7 +18,7 @@ logger.addHandler(file_handler)
 
 iam_client = boto3.client('iam')
 
-role_name = "OrgS3readonlyrole"
+role_name = "OrgS3role"
 
 logger.info(f"Command to run this account from each source account is py.exe ./orgSourceAccountRole.py")
 logger.info(f"Ensure to provide destination/centralized a valid AWS 12-digit account id")
