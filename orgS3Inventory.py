@@ -21,7 +21,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 region = ''
-frequency = 'Daily'
+frequency = 'Weekly'
 logger.info("S3 Inventory frequency is set to : {}".format(frequency))
 
 
