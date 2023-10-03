@@ -4,7 +4,7 @@ Description: Template automate creation of Athena table and populates inventory 
 Parameters:
   InventoryBucketName:
     Type: String
-    Description: Enter the name of S3 Bucket with centralized inventory (s3inventory-{region}-{accountId})
+    Description: Enter the name of the S3 bucket that is the destination for all of the S3 Inventory reports in the Region (s3inventory-{region}-{accountId})
       
   WorkGroupName:
     Type: String
