@@ -5,6 +5,10 @@ Amazon S3 Inventory provides comma-separated values (CSV), Apache optimized row 
 
 To simplify and automate the above tasks, customers can leverages AWS CloudFormation, AWS Lambda, and Python scripts provided in the repository. It also extends the visibility of the objects by organizing Amazon S3 Inventory reports in a partitioned Athena table for performance improvement and cost reduction on multiple accounts and across AWS Regions. 
 
+**Architecture Diagram**
+
+![Architecture](./images/Org-level-S3Inventory.png)
+
 
 **Walkthrough** 
 
