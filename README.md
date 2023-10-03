@@ -1,5 +1,22 @@
-**Here’s the steps for executing Python scripts:**
- 
+Amazon S3 Inventory is used to help manage your storage. For example, you can use it to audit and report on the replication and encryption status of your objects for business, compliance, and regulatory needs. You can also simplify and speed up business workflows and big data jobs by using Amazon S3 Inventory, which provides a scheduled alternative to the Amazon S3 synchronous List API operations. Amazon S3 Inventory does not use the List API operations to audit your objects and does not affect the request rate of your bucket.
+Amazon S3 Inventory provides comma-separated values (CSV), Apache optimized row columnar (ORC) or Apache Parquet output files that list your objects and their corresponding metadata on a daily or weekly basis for an S3 bucket or objects with a shared prefix (that is, objects that have names that begin with a common string). If you set up a weekly inventory, a report is generated every Sunday (UTC time zone) after the initial report.This configuration requires one Athena table and one associated query per bucket. Customers that store data in multiple buckets across different accounts and AWS Regions must complete the following tasks for each bucket:
+ 1.	Enable Amazon S3 Inventory configuration at the bucket or prefix level across accounts and AWS Regions. This must be completed for all existing buckets, and all subsequently created buckets.
+ 2.	Move and structure the data from multiple accounts and AWS Regions into one bucket.
+
+To simplify and automate the above tasks, customers can leverages AWS CloudFormation, AWS Lambda, and Python scripts provided in the repository. It also extends the visibility of the objects by organizing Amazon S3 Inventory reports in a partitioned Athena table for performance improvement and cost reduction on multiple accounts and across AWS Regions. 
+
+
+**Walkthrough** 
+
+The solution is deployed in three steps: 
+
+1.	Configure and centralize Amazon S3 Inventory across AWS Regions and across AWS accounts.
+2.	Automate query setup across AWS Regions in the delegated administrator account.
+3.	Query centralized Amazon S3 Inventory using Athena.
+
+
+The following steps walk you through implementing the solution.
+
 If you set a member account to collect Org-level S3 inventories in your Organization, please nominate that account as the destination account (other than Management Account) for managing inventories for all other accounts that act as source accounts.
  
 **PREREQUISITE :**
@@ -23,7 +40,7 @@ Note: Please ensure that you have an appropriate AWS destination account credent
 
 5. Create a CloudFormation stacksets from the delegated member account using script <<OrgS3InvSourceAccountPolicy.json>> or <<<<OrgS3InvSourceAccountPolicy.yaml>> to create IAM role, allowing the destination account to assume role and create S3 Inventories.
 
-6. On the Specify stack details page, type a stack name in the Stack name box, Destination IAM user (the default IAM user is set to “ ”. I would recommend using the IAM user that will be performing S3 Inventory operations), and a 12-digit AWS destination account Id to assume the role from AWS source accounts. 
+6. On the Specify stack details page, type a stack name in the Stack name and StackSet Description. Under Parameters, enter s3InventoryUser(your delegated admin user) and DelegatedAccountID.
 
 7. Ensure “OrgS3role” role has the corresponding “OrgS3role_policy” policy with a trust relationship with the destination account and IAM user (if provided) in each source account.
 
