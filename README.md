@@ -46,7 +46,10 @@ Note: Please ensure that you have an appropriate AWS destination account credent
 
 8. From the destination account, you can run py.exe .\ orgS3Inventory.py to create a centralized S3 inventory bucket per region in the destination account to record inventories from all source accounts and buckets. Format of the destination bucket is “s3inventory-<<region>>-<<destinationaccountId>>”
 
-9. Finally, execute a CloudFormation stack - S3Inventory.yaml from the destination account. This stack will create two lambda functions – 
+9. Finally, execute a CloudFormation stack - S3Inventory.yaml from the destination account. This stack will create two lambda functions –
+    
      i.	“lambda-function-inventory” which triggers when a new object is added to the destination S3 bucket. The function creates an Athena           table “Inventory” if it does not exist along with two partitions – “bucketname” and ‘dt”.
+   
      ii.	Another lambda function is to set Event types of “s3:ObjectCreated:*” for the destination bucket.
+   
 10. Navigate to AWS Athena console/API to run analytics on the storage inventory from the table - "inventory" that is created per region.
