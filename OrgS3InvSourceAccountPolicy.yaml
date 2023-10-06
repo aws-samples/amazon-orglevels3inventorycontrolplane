@@ -2,10 +2,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Template to Create an IAM Role on source accounts
 Parameters:
-  DelegatedAccountId:
+  DestinationAccountId:
     Type: String
     AllowedPattern: "\\d{12}"
-    Description: 'Enter 12-digit Delegated AWS Account ID. Ex: 123456789012'
+    Description: 'Enter 12-digit Destination AWS Account ID. Ex: 123456789012'
   S3InventoryUser:
     Type: String
     Description: IAM user to assume the role from the source
@@ -22,7 +22,7 @@ Resources:
         - Effect: Allow
           Principal:
             AWS:
-              Fn::Sub: arn:aws:iam::${DelegatedAccountId}:user/${S3InventoryUser}
+              Fn::Sub: arn:aws:iam::${DestinationAccountId}:user/${S3InventoryUser}
           Action: sts:AssumeRole
       Path: "/"
       RoleName: OrgS3role
