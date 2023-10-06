@@ -56,6 +56,6 @@ Note: Please ensure that you have an appropriate AWS destination account credent
    
      ii.	Another lambda function is to set Event types of “s3:ObjectCreated:*” for the destination bucket.
    
-**Note:** Please ensure that you've followed the principle of IAM least previlidges for the lambda function.
+**Note:** Please ensure that you've followed the principle of least privileges for the lambda function execution roles. 
    
 11. Navigate to AWS Athena console/API to run analytics on the storage inventory from the table - "inventory" that is created per region.
