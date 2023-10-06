@@ -48,7 +48,7 @@ Note: Please ensure that you have an appropriate AWS destination account credent
 
 7. Ensure “OrgS3role” role has the corresponding “OrgS3role_policy” policy with a trust relationship with the destination account and IAM user (if provided) in each source account.
 
-8. From the destination account, you can run py.exe .\ orgS3Inventory.py to create a centralized S3 inventory bucket per region in the destination account to record inventories from all source accounts and buckets. Format of the destination bucket is “s3inventory-<<region>>-<<destinationaccountId>>”
+8. From the destination account, you can run py.exe .\ orgS3Inventory.py to create a centralized S3 inventory bucket per region in the destination account to record inventories from all source accounts and buckets. Format of the destination bucket is “s3inventory-region-destinationaccountId”
 
 9. Finally, execute a CloudFormation stack - S3Inventory.yaml from the destination account. This stack will create two lambda functions –
     
