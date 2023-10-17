@@ -72,6 +72,11 @@ def create_iam_policy(policyName):
                     "s3:PutInventoryConfiguration"
                 ],
                 "Resource": "arn:aws:s3:::*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "sts:AssumeRole",
+                "Resource": "arn:aws:iam::*:role/OrgS3role"
             }
         ]
     }
