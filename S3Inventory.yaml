@@ -182,9 +182,6 @@ Resources:
               source_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
               print (f'Source bucket is {source_bucket}')
               
-              #source_bucket = 's3inventory-us-east-1-346203898508'
-              #source_key = 'inventory/cloudtrail-awslogs-346203898508-crkmzfog-isengard-do-not-delete/cloudtrail-awslogs-346203898508-crkmzfog-isengard--Inventory/hive/dt=2022-10-18-00-00/symlink.txt'
-
               # Make sure the object path is a valid inventory symlink format.
               source_key_arr = source_key.split('/')
               if source_key.endswith('/symlink.txt') and len(source_key_arr) >= 5 and source_key_arr[-3] == 'hive':
