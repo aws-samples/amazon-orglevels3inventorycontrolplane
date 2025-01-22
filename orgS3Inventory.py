@@ -104,6 +104,7 @@ def insertDict(region, bucketName):
 
 
 #Listing buckets and creating a dictonary of all buckets in an account with region as key
+regionDict = {}
 def listBuckets(s3):
     try:
         BucketName = s3.list_buckets() 
