@@ -20,7 +20,7 @@ policyName='S3InvDestAccountPolicy'
 # method to determine accountID. I will be using this account Id as the destination account Id.
 def getUserName():
     sts = boto3.client('sts')
-    user = sts.get_caller_identity()['Arn'].split(":")[5].split("/")[1]
+    user = sts.get_caller_identity()['Arn'].split("/")[-1]
     logger.info(f"IAM user name is {user}")
     return(user)
 
